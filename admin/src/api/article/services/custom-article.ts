@@ -1,6 +1,13 @@
 export default {
   // Get all articles
-  async getPaginatedArticles({ page, limit, search, category, subcategory }) {
+  async getPaginatedArticles({
+    page,
+    limit,
+    search,
+    category,
+    subcategory,
+    locale,
+  }) {
     const pageNumber = parseInt(page, 10) || 1;
     const pageSize = parseInt(limit, 10) || 10;
     const start = (pageNumber - 1) * pageSize;
@@ -17,6 +24,10 @@ export default {
 
     if (subcategory) {
       filters.subcategory = subcategory;
+    }
+
+    if (locale) {
+      filters.locale = locale;
     }
 
     const [articles, total] = await Promise.all([

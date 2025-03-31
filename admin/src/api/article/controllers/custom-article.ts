@@ -7,7 +7,8 @@ export default factories.createCoreController(
     // Get all articles
     async findArticles(ctx) {
       try {
-        const { page, limit, search, category, subcategory } = ctx.query;
+        const { page, limit, search, category, subcategory, locale } =
+          ctx.query;
 
         const result = await articleService.getPaginatedArticles({
           page,
@@ -15,6 +16,7 @@ export default factories.createCoreController(
           search,
           category,
           subcategory,
+          locale,
         });
 
         return ctx.send(result);

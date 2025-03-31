@@ -436,8 +436,8 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     >;
     category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
     comments: Schema.Attribute.Relation<'oneToMany', 'api::comment.comment'>;
-    con: Schema.Attribute.Blocks;
-    content: Schema.Attribute.RichText &
+    content: Schema.Attribute.Blocks &
+      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
