@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "notifications",
+  "info": {
+    "displayName": "Notification",
+    "singularName": "notification",
+    "pluralName": "notifications",
+    "description": "Stores user notifications"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "message": {
+      "type": "text",
+      "required": true
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    },
+    "timestamp": {
+      "type": "datetime",
+      "default": "now"
+    }
+  }
+}

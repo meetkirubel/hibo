@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "analytics",
+  "info": {
+    "singularName": "analytic",
+    "pluralName": "analytics",
+    "displayName": "Analytics"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "event_type": {
+      "type": "enumeration",
+      "enum": [
+        "view",
+        "read",
+        "like",
+        "comment"
+      ]
+    },
+    "timestamp": {
+      "type": "datetime"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

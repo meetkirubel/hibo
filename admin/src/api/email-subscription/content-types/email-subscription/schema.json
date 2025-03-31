@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "email_subscriptions",
+  "info": {
+    "displayName": "Email Subscription",
+    "singularName": "email-subscription",
+    "pluralName": "email-subscriptions",
+
+    "description": "Stores user email subscriptions"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user",
+      "required": true
+    },
+    "preferences": {
+      "type": "json",
+      "default": {
+        "newsletter": true,
+        "article_updates": true
+      }
+    },
+    "subscribed_at": {
+      "type": "datetime",
+      "default": "now"
+    }
+  }
+}
