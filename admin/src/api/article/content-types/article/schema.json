@@ -23,7 +23,8 @@
         "i18n": {
           "localized": true
         }
-      }
+      },
+      "required": true
     },
     "slug": {
       "type": "uid",
@@ -39,11 +40,7 @@
     },
     "approval_status": {
       "type": "enumeration",
-      "enum": [
-        "draft",
-        "waiting_for_approval",
-        "approved"
-      ],
+      "enum": ["draft", "waiting_for_approval", "approved"],
       "default": "draft",
       "pluginOptions": {
         "i18n": {
@@ -73,9 +70,7 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ],
+      "allowedTypes": ["images"],
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -85,8 +80,7 @@
     "author": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": "articles"
+      "target": "admin::user"
     },
     "view_count": {
       "type": "integer",
@@ -109,7 +103,7 @@
       "target": "api::sub-category.sub-category",
       "inversedBy": "articles"
     },
-    "Tag": {
+    "tag": {
       "type": "string",
       "pluginOptions": {
         "i18n": {

@@ -7,8 +7,10 @@ export default factories.createCoreController(
     // Get all articles
     async findArticles(ctx) {
       try {
-        const { page, limit, search, category, subcategory, locale } =
-          ctx.query;
+        const sanitizedQuery = await this.sanitizeQuery(ctx);
+
+        const { page, limit, search, category, subcategory, tag, locale } =
+          sanitizedQuery;
 
         const result = await articleService.getPaginatedArticles({
           page,
@@ -16,12 +18,28 @@ export default factories.createCoreController(
           search,
           category,
           subcategory,
+          tag,
           locale,
         });
 
         return ctx.send(result);
       } catch (error) {
-        ctx.throw(500, 'Failed to fetch articles');
+        ctx.throw(500, `Failed to fetch articles: ${error.message}`);
+      }
+    },
+
+    // Get article by slug
+    async getArticle(ctx) {
+      try {
+        const sanitizedQuery = await this.sanitizeQuery(ctx);
+
+        const { slug } = sanitizedQuery;
+
+        const result = await articleService.getArticle(slug);
+
+        return ctx.send(result);
+      } catch (error) {
+        ctx.throw(500, 'Failed to fetch article');
       }
     },
   })
