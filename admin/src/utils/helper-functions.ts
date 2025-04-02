@@ -6,10 +6,67 @@ const WORDS_PER_MINUTE = 200; // Average reading speed
  * @returns Capitilized title
  */
 function capitalize(title: string): string {
+  const lowercaseWords = new Set([
+    'a',
+    'an',
+    'the',
+    'and',
+    'but',
+    'or',
+    'nor',
+    'for',
+    'so',
+    'yet',
+    'at',
+    'by',
+    'in',
+    'of',
+    'off',
+    'on',
+    'to',
+    'up',
+    'with',
+    'as',
+    'if',
+    'than',
+    'that',
+  ]);
+
+  const alwaysUppercaseWords = new Set([
+    'CEO',
+    'NASA',
+    'FBI',
+    'AI',
+    'HTML',
+    'CSS',
+    'USA',
+    'UK',
+    'UN',
+    'EU',
+    'IT',
+  ]);
+
   return title
     .toLowerCase()
     .split(' ')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word, index, words) => {
+      // Always capitalize the first and last word
+      if (index === 0 || index === words.length - 1) {
+        return alwaysUppercaseWords.has(word.toUpperCase())
+          ? word.toUpperCase() // Keep words like "CEO" in uppercase
+          : word.charAt(0).toUpperCase() + word.slice(1);
+      }
+
+      // Always keep certain words in uppercase
+      if (alwaysUppercaseWords.has(word.toUpperCase())) {
+        return word.toUpperCase();
+      }
+
+      // Capitalize if it's not in the lowercase words list
+      return lowercaseWords.has(word)
+        ? word
+        : word.charAt(0).toUpperCase() + word.slice(1);
+    })
     .join(' ');
 }
 
