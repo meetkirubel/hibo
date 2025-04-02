@@ -40,7 +40,11 @@
     },
     "approval_status": {
       "type": "enumeration",
-      "enum": ["draft", "waiting_for_approval", "approved"],
+      "enum": [
+        "draft",
+        "waiting_for_approval",
+        "approved"
+      ],
       "default": "draft",
       "pluginOptions": {
         "i18n": {
@@ -70,7 +74,9 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"],
+      "allowedTypes": [
+        "images"
+      ],
       "pluginOptions": {
         "i18n": {
           "localized": true

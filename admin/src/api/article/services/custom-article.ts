@@ -56,9 +56,9 @@ export default {
         limit: pageSize,
         orderBy: { createdAt: 'desc' },
         populate: {
+          image: { fields: 'url' },
           category: { fields: 'name' },
           sub_category: { fields: 'name' },
-          image: { fields: ['url', 'alternativeText', 'formats'] },
           author: { fields: 'username' },
         },
       }),
@@ -76,6 +76,7 @@ export default {
         documentId: article.documentId,
         title: article.title,
         slug: article.slug,
+        image_url: article.image ? article.image.url : null,
         excerpt: article.excerpt,
         reading_time: article.reading_time,
         tag: article.tag.split(',').map((tag) => tag.trim()),
