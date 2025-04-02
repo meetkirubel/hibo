@@ -567,6 +567,10 @@ export interface ApiCommentComment extends Struct.CollectionTypeSchema {
       }> &
       Schema.Attribute.DefaultTo<'pending'>;
     article: Schema.Attribute.Relation<'manyToOne', 'api::article.article'>;
+    commentor: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
     content: Schema.Attribute.Text &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
@@ -586,10 +590,6 @@ export interface ApiCommentComment extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    users_permissions_user: Schema.Attribute.Relation<
-      'manyToOne',
-      'plugin::users-permissions.user'
-    >;
   };
 }
 
