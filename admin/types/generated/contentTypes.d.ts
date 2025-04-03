@@ -462,6 +462,15 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         };
       }> &
       Schema.Attribute.DefaultTo<false>;
+    like_counts: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    likes: Schema.Attribute.Relation<'oneToMany', 'api::like.like'>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -496,13 +505,6 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    view_count: Schema.Attribute.Integer &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }> &
-      Schema.Attribute.DefaultTo<0>;
   };
 }
 
@@ -634,6 +636,36 @@ export interface ApiEmailSubscriptionEmailSubscription
       'plugin::users-permissions.user'
     > &
       Schema.Attribute.Required;
+  };
+}
+
+export interface ApiLikeLike extends Struct.CollectionTypeSchema {
+  collectionName: 'likes';
+  info: {
+    description: '';
+    displayName: 'Like';
+    pluralName: 'likes';
+    singularName: 'like';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    article: Schema.Attribute.Relation<'manyToOne', 'api::article.article'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::like.like'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -1209,6 +1241,7 @@ export interface PluginUsersPermissionsUser
         minLength: 6;
       }>;
     is_premium: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    likes: Schema.Attribute.Relation<'oneToMany', 'api::like.like'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1258,6 +1291,7 @@ declare module '@strapi/strapi' {
       'api::category.category': ApiCategoryCategory;
       'api::comment.comment': ApiCommentComment;
       'api::email-subscription.email-subscription': ApiEmailSubscriptionEmailSubscription;
+      'api::like.like': ApiLikeLike;
       'api::notification.notification': ApiNotificationNotification;
       'api::sub-category.sub-category': ApiSubCategorySubCategory;
       'api::subscription.subscription': ApiSubscriptionSubscription;

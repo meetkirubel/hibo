@@ -80,6 +80,12 @@
       "relation": "oneToMany",
       "target": "api::comment.comment",
       "mappedBy": "commentor"
+    },
+    "likes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::like.like",
+      "mappedBy": "user"
     }
   }
 }

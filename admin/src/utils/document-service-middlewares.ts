@@ -1,6 +1,5 @@
 import slugify from 'slugify';
 import { capitalize, calculateReadingTime } from './helper-functions';
-import { timeEnd } from 'node:console';
 
 const pageTypes = ['api::article.article'];
 const pageActions = ['create', 'update'];
@@ -15,7 +14,7 @@ const contentMiddleware = () => {
       return await next();
     }
 
-    const { data } = context.params;
+    const { data } = context.params; 
     let title = data.title;
     let content = data.content;
 
