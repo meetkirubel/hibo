@@ -88,15 +88,6 @@
       "relation": "manyToOne",
       "target": "admin::user"
     },
-    "view_count": {
-      "type": "integer",
-      "default": 0,
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
     "category": {
       "type": "relation",
       "relation": "manyToOne",
@@ -131,6 +122,17 @@
         }
       },
       "required": true
+    },
+    "likes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::like.like",
+      "mappedBy": "article"
+    },
+    "like_counts": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
     }
   }
 }
