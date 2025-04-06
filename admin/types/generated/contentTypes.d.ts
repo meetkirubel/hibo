@@ -455,6 +455,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
           localized: true;
         };
       }>;
+    is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     is_premium: Schema.Attribute.Boolean &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
@@ -462,7 +463,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         };
       }> &
       Schema.Attribute.DefaultTo<false>;
-    like_counts: Schema.Attribute.Integer &
+    like_count: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
           min: 0;
