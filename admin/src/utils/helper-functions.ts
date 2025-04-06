@@ -34,6 +34,7 @@ function capitalize(title: string): string {
 
   const alwaysUppercaseWords = new Set([
     'CEO',
+    'CTO',
     'NASA',
     'FBI',
     'AI',

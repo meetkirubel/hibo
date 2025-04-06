@@ -1,7 +1,7 @@
 import slugify from 'slugify';
 import { capitalize, calculateReadingTime } from './helper-functions';
 
-const pageTypes = ['api::article.article'];
+const pageTypes = ['api::article.article', 'api::comment.comment'];
 const pageActions = ['create', 'update'];
 
 const contentMiddleware = () => {
@@ -14,7 +14,7 @@ const contentMiddleware = () => {
       return await next();
     }
 
-    const { data } = context.params; 
+    const { data } = context.params;
     let title = data.title;
     let content = data.content;
 
@@ -36,4 +36,20 @@ const contentMiddleware = () => {
   };
 };
 
-export { contentMiddleware };
+const commentMiddleware = () => {
+  return async (context, next) => {
+    if (
+      !pageTypes.includes(context.uid) ||
+      !pageActions.includes(context.action)
+    ) {
+      return await next();
+    }
+    const user = context.state;
+    console.log(user);
+
+    // Call the next middleware in the stack
+    return await next();
+  };
+};
+
+export { contentMiddleware, commentMiddleware };
