@@ -9,8 +9,16 @@ export default factories.createCoreController(
       try {
         const sanitizedQuery = await this.sanitizeQuery(ctx);
 
-        const { page, limit, search, category, subcategory, tag, locale } =
-          sanitizedQuery;
+        const {
+          page,
+          limit,
+          search,
+          category,
+          subcategory,
+          tag,
+          locale,
+          is_featured,
+        } = sanitizedQuery;
 
         const result = await articleService.getPaginatedArticles({
           page,
@@ -20,6 +28,7 @@ export default factories.createCoreController(
           subcategory,
           tag,
           locale,
+          is_featured,
         });
 
         return ctx.send(result);

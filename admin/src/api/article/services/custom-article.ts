@@ -8,6 +8,7 @@ export default {
     subcategory,
     tag,
     locale,
+    is_featured,
   }) {
     const pageNumber = parseInt(page, 10) || 1;
     const pageSize = parseInt(limit, 10) || 10;
@@ -37,6 +38,10 @@ export default {
       };
     }
 
+    if (is_featured) {
+      filters.is_featured = is_featured;
+    }
+
     const [articles, total] = await Promise.all([
       strapi.documents('api::article.article').findMany({
         where: filters,
@@ -45,10 +50,12 @@ export default {
           'title',
           'slug',
           'excerpt',
-          'approval_status',
           'is_premium',
+          'like_count',
+          'is_featured',
           'reading_time',
           'tag',
+          'updatedAt',
           'content',
         ],
         start,
@@ -58,7 +65,7 @@ export default {
           image: { fields: 'url' },
           category: { fields: 'name' },
           sub_category: { fields: 'name' },
-          author: { fields: 'username' },
+          author: { fields: ['firstname', 'lastname'] },
         },
       }),
       strapi.query('api::article.article').count({ where: filters }),
@@ -74,13 +81,18 @@ export default {
       data: articles.map((article) => ({
         documentId: article.documentId,
         title: article.title,
+        author: article.author ? article.author : null,
         slug: article.slug,
-        image_url: article.image ? article.image.url : null,
+        featured_image: article.image ? article.image.url : null,
         excerpt: article.excerpt,
         reading_time: article.reading_time,
-        tag: article.tag.split(',').map((tag) => tag.trim()),
+        tag: article.tag
+          ? article.tag.split(',').map((tag) => tag.trim())
+          : null,
         is_premium: article.is_premium,
-        approval_status: article.approval_status,
+        like: article.like_count,
+        is_featured: article.is_featured,
+        updated_at: article.updatedAt,
         content: article.content,
       })),
     };

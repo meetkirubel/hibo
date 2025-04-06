@@ -129,10 +129,14 @@
       "target": "api::like.like",
       "mappedBy": "article"
     },
-    "like_counts": {
-      "type": "integer",
+    "like_count": {
       "min": 0,
-      "default": 0
+      "default": 0,
+      "type": "integer"
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
