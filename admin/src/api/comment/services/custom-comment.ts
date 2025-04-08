@@ -53,7 +53,8 @@ export default {
         page: pageNumber,
         pageSize,
         total,
-        hasNextPage: pageNumber * pageSize < total,
+        pageCount: Math.ceil(total / pageSize),
+        hasNextPage: start + pageSize < total,
       },
       data: comments.map((comment) => ({
         documentId: comment.documentId,
