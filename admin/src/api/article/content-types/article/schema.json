@@ -114,15 +114,6 @@
       "target": "api::comment.comment",
       "mappedBy": "article"
     },
-    "content": {
-      "type": "blocks",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
-      "required": true
-    },
     "likes": {
       "type": "relation",
       "relation": "oneToMany",
@@ -135,6 +126,23 @@
       "type": "integer"
     },
     "is_featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "content": {
+      "type": "customField",
+      "options": {
+        "preset": "defaultHtml"
+      },
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "customField": "plugin::ckeditor5.CKEditor"
+    },
+    "liked": {
       "type": "boolean",
       "default": false
     }

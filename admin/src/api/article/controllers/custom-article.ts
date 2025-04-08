@@ -7,6 +7,7 @@ export default factories.createCoreController(
     // Get all articles
     async findArticles(ctx) {
       try {
+        const userId = ctx.state?.user?.documentId;
         const sanitizedQuery = await this.sanitizeQuery(ctx);
 
         const {
@@ -21,6 +22,7 @@ export default factories.createCoreController(
         } = sanitizedQuery;
 
         const result = await articleService.getPaginatedArticles({
+          userId,
           page,
           limit,
           search,

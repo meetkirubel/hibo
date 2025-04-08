@@ -1,6 +1,7 @@
 export default {
   // Get all articles
   async getPaginatedArticles({
+    userId,
     page,
     limit,
     search,
@@ -76,6 +77,7 @@ export default {
         page: pageNumber,
         pageSize,
         total,
+        pageCount: Math.ceil(total / pageSize),
         hasNextPage: start + pageSize < total,
       },
       data: articles.map((article) => ({
