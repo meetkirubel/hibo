@@ -1,8 +1,5 @@
 import type { Core } from '@strapi/strapi';
-import {
-  contentMiddleware,
-  commentMiddleware,
-} from './utils/document-service-middlewares';
+import { contentMiddleware } from './utils/document-service-middlewares';
 
 export default {
   /**
@@ -12,7 +9,7 @@ export default {
    * This gives you an opportunity to extend code.
    */
   register({ strapi }: { strapi: Core.Strapi }) {
-    const middlewares = [contentMiddleware, commentMiddleware];
+    const middlewares = [contentMiddleware];
 
     middlewares.forEach((middleware) => {
       strapi.documents.use(middleware());
