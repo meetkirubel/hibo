@@ -433,8 +433,14 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     author: Schema.Attribute.Relation<'manyToOne', 'admin::user'>;
     category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
     comments: Schema.Attribute.Relation<'oneToMany', 'api::comment.comment'>;
-    content: Schema.Attribute.Blocks &
+    content: Schema.Attribute.RichText &
       Schema.Attribute.Required &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -471,6 +477,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         number
       > &
       Schema.Attribute.DefaultTo<0>;
+    liked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     likes: Schema.Attribute.Relation<'oneToMany', 'api::like.like'>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
@@ -656,6 +663,7 @@ export interface ApiLikeLike extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    liked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::like.like'> &
       Schema.Attribute.Private;
