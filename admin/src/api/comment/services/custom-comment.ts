@@ -1,4 +1,27 @@
 export default {
+  // Create a comment
+  async create(ctx, user, comment, articleId) {
+    // Find the article if it exists
+    const article = await strapi
+      .documents('api::article.article')
+      .findOne({ documentId: articleId });
+
+    if (!article) {
+      ctx.throw(404, 'Article not found');
+    }
+
+    // Create a comment
+    const result = await strapi.documents('api::comment.comment').create({
+      data: {
+        content: comment,
+        commentor: user.documentId,
+        article: articleId,
+      },
+    });
+
+    return result;
+  },
+
   // Get all comments
   async commentsForArticle(page, limit, articleId) {
     const pageNumber = parseInt(page, 10) || 1;
@@ -13,7 +36,7 @@ export default {
     const [comments, total] = await Promise.all([
       strapi.documents('api::comment.comment').findMany({
         where: filters,
-        select: ['documentId', 'approval_status', 'content', 'locale'],
+        select: ['documentId', 'content'],
         start,
         limit: pageSize,
         orderBy: { createdAt: 'desc' },
@@ -34,9 +57,7 @@ export default {
       },
       data: comments.map((comment) => ({
         documentId: comment.documentId,
-        approval_status: comment.approval_status,
         content: comment.content,
-        locale: comment.locale,
         article: comment.article.documentId,
         commentor: comment.commentor.username,
       })),
