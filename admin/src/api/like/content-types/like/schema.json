@@ -22,6 +22,10 @@
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "likes"
+    },
+    "liked": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

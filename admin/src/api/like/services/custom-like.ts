@@ -1,7 +1,7 @@
 import { connect } from 'http2';
 
 export default {
-  async toggle(ctx, articleId, commentorId, action) {
+  async toggle(ctx, articleId, userId, action) {
     // Find the article if it exists
     const article = await strapi
       .documents('api::article.article')
@@ -15,7 +15,7 @@ export default {
     const existingLike = await strapi.documents('api::like.like').findFirst({
       filters: {
         article: { documentId: articleId },
-        user: { documentId: commentorId },
+        user: { documentId: userId },
       },
     });
 
@@ -29,7 +29,8 @@ export default {
       await strapi.documents('api::like.like').create({
         data: {
           article: articleId,
-          user: commentorId,
+          user: userId,
+          liked: true,
         },
       });
 

@@ -8,7 +8,7 @@ export default factories.createCoreController('api::like.like', (strapi) => ({
     if (!user) {
       return ctx.unauthorized('You must be logged in to like an article');
     }
-    const commentorId = user.documentId;
+    const userId = user.documentId;
     const { articleId, action } = ctx.request.body;
 
     if (!articleId || !['like', 'unlike'].includes(action)) {
@@ -18,7 +18,7 @@ export default factories.createCoreController('api::like.like', (strapi) => ({
     const result = await likeService.toggle(
       ctx,
       articleId,
-      commentorId,
+      userId,
       action
     );
 
