@@ -24,9 +24,8 @@ const contentMiddleware = () => {
     }
 
     // Generate slug
-    let Stitle = data.title;
-    // Replace disallowed characters with a space to prevent word merging
-    Stitle = title.replace(/[^A-Za-z0-9_.~]+/g, ' ');
+    let Stitle = data.title || '';
+    Stitle = Stitle.replace(/[^A-Za-z0-9_.~]+/g, ' ');
     // Generate slug
     let slug = slugify(Stitle, {
       lower: true,
