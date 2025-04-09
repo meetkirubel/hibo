@@ -424,6 +424,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     approval_status: Schema.Attribute.Enumeration<
       ['draft', 'waiting_for_approval', 'approved']
     > &
+      Schema.Attribute.Private &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -458,11 +459,12 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     image: Schema.Attribute.Media<'images'> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
-          localized: true;
+          localized: false;
         };
       }>;
     is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     is_premium: Schema.Attribute.Boolean &
+      Schema.Attribute.Private &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -477,7 +479,6 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         number
       > &
       Schema.Attribute.DefaultTo<0>;
-    liked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     likes: Schema.Attribute.Relation<'oneToMany', 'api::like.like'>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
@@ -488,9 +489,15 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     reading_time: Schema.Attribute.Integer &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
-          localized: true;
+          localized: false;
         };
       }> &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
       Schema.Attribute.DefaultTo<0>;
     slug: Schema.Attribute.UID<'title'>;
     sub_category: Schema.Attribute.Relation<
@@ -500,7 +507,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     tag: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
-          localized: true;
+          localized: false;
         };
       }>;
     title: Schema.Attribute.String &
