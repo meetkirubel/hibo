@@ -1,3 +1,10 @@
+function formatLikeCount(number) {
+  if (number >= 1000) {
+    return Math.floor(number / 1000) + 'K';
+  }
+  return number.toString();
+}
+
 export default {
   // Get all articles
   async getPaginatedArticles({
@@ -10,6 +17,7 @@ export default {
     tag,
     locale,
     is_featured,
+    slug,
   }) {
     const pageNumber = parseInt(page, 10) || 1;
     const pageSize = parseInt(limit, 10) || 10;
@@ -43,6 +51,10 @@ export default {
       filters.is_featured = is_featured;
     }
 
+    if (slug) {
+      filters.slug = slug;
+    }
+
     const [articles, total] = await Promise.all([
       strapi.documents('api::article.article').findMany({
         where: filters,
@@ -61,7 +73,7 @@ export default {
         ],
         start,
         limit: pageSize,
-        orderBy: { createdAt: 'desc' },
+        sort: { createdAt: 'desc' },
         populate: {
           image: { fields: 'url' },
           category: { fields: 'name' },
@@ -71,6 +83,25 @@ export default {
       }),
       strapi.query('api::article.article').count({ where: filters }),
     ]);
+
+    const articleIds = articles.map((article) => article.documentId);
+
+    // Fetch all likes for the current user for these articles
+    const userLikes = await strapi.documents('api::like.like').findMany({
+      filters: {
+        user: { documentId: userId },
+        article: { documentId: { $in: articleIds } },
+      },
+      populate: {
+        article: {
+          fields: 'id',
+        },
+      },
+    });
+
+    const likedArticleIds = new Set(
+      userLikes.map((like) => like.article.documentId)
+    );
 
     return {
       pagination: {
@@ -92,20 +123,12 @@ export default {
           ? article.tag.split(',').map((tag) => tag.trim())
           : null,
         is_premium: article.is_premium,
-        like: article.like_count,
+        likedByCurrentUser: likedArticleIds.has(article.documentId),
+        likes: formatLikeCount(article.like_count),
         is_featured: article.is_featured,
         updated_at: article.updatedAt,
         content: article.content,
       })),
     };
-  },
-
-  // Get article by its slug
-  async getArticle(slug) {
-    const article = await strapi
-      .documents('api::article.article')
-      .findFirst(slug);
-
-    return article;
   },
 };

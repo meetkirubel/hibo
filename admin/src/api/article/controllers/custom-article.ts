@@ -19,6 +19,7 @@ export default factories.createCoreController(
           tag,
           locale,
           is_featured,
+          slug
         } = sanitizedQuery;
 
         const result = await articleService.getPaginatedArticles({
@@ -31,26 +32,12 @@ export default factories.createCoreController(
           tag,
           locale,
           is_featured,
+          slug
         });
 
         return ctx.send(result);
       } catch (error) {
         ctx.throw(500, `Failed to fetch articles: ${error.message}`);
-      }
-    },
-
-    // Get article by slug
-    async getArticle(ctx) {
-      try {
-        const sanitizedQuery = await this.sanitizeQuery(ctx);
-
-        const { slug } = sanitizedQuery;
-
-        const result = await articleService.getArticle(slug);
-
-        return ctx.send(result);
-      } catch (error) {
-        ctx.throw(500, 'Failed to fetch article');
       }
     },
   })
