@@ -1,5 +1,3 @@
-import { connect } from 'http2';
-
 export default {
   async toggle(ctx, articleId, userId, action) {
     // Find the article if it exists
