@@ -21,10 +21,23 @@ const contentMiddleware = () => {
     // Capitilize the title
     if (title) {
       context.params.data.title = capitalize(title);
-
-      // Generate slug
-      context.params.data.slug = slugify(data.title, { lower: true });
     }
+
+    // Generate slug
+    let Stitle = data.title;
+    // Replace disallowed characters with a space to prevent word merging
+    Stitle = title.replace(/[^A-Za-z0-9_.~]+/g, ' ');
+    // Generate slug
+    let slug = slugify(Stitle, {
+      lower: true,
+      trim: true,
+    });
+
+    // Trim unwanted trailing/leading symbols (-, ., _, ~)
+    slug = slug.replace(/^[-._~]+|[-._~]+$/g, '');
+
+    // Assign it
+    context.params.data.slug = slug;
 
     // Calculate reading time
     if (content) {
