@@ -1,4 +1,5 @@
-// import type { Core } from '@strapi/strapi';
+import type { Core } from '@strapi/strapi';
+import { contentMiddleware } from './utils/document-service-middlewares';
 
 export default {
   /**
@@ -7,7 +8,13 @@ export default {
    *
    * This gives you an opportunity to extend code.
    */
-  register(/* { strapi }: { strapi: Core.Strapi } */) {},
+  register({ strapi }: { strapi: Core.Strapi }) {
+    const middlewares = [contentMiddleware];
+
+    middlewares.forEach((middleware) => {
+      strapi.documents.use(middleware());
+    });
+  },
 
   /**
    * An asynchronous bootstrap function that runs before

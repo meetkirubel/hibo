@@ -10,10 +10,20 @@
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
     "content": {
       "type": "text",
-      "required": true
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "approval_status": {
       "type": "enumeration",
@@ -22,9 +32,14 @@
         "approved",
         "rejected"
       ],
-      "default": "pending"
+      "default": "pending",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
-    "users_permissions_user": {
+    "commentor": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",

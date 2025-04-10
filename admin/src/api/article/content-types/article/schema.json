@@ -23,7 +23,8 @@
         "i18n": {
           "localized": true
         }
-      }
+      },
+      "required": true
     },
     "slug": {
       "type": "uid",
@@ -37,27 +38,16 @@
         }
       }
     },
-    "content": {
-      "type": "richtext",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
     "approval_status": {
       "type": "enumeration",
-      "enum": [
-        "draft",
-        "waiting_for_approval",
-        "approved"
-      ],
+      "enum": ["draft", "waiting_for_approval", "approved"],
       "default": "draft",
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
-      }
+      },
+      "private": true
     },
     "is_premium": {
       "type": "boolean",
@@ -66,44 +56,34 @@
         "i18n": {
           "localized": true
         }
-      }
+      },
+      "private": true
     },
     "reading_time": {
       "type": "integer",
       "default": 0,
       "pluginOptions": {
         "i18n": {
-          "localized": true
+          "localized": false
         }
-      }
+      },
+      "min": 0
     },
     "image": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ],
+      "allowedTypes": ["images"],
       "pluginOptions": {
         "i18n": {
-          "localized": true
+          "localized": false
         }
       }
     },
     "author": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": "articles"
-    },
-    "view_count": {
-      "type": "integer",
-      "default": 0,
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
+      "target": "admin::user"
     },
     "category": {
       "type": "relation",
@@ -117,11 +97,11 @@
       "target": "api::sub-category.sub-category",
       "inversedBy": "articles"
     },
-    "Tag": {
+    "tag": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
-          "localized": true
+          "localized": false
         }
       }
     },
@@ -131,8 +111,33 @@
       "target": "api::comment.comment",
       "mappedBy": "article"
     },
-    "con": {
-      "type": "blocks"
+    "likes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::like.like",
+      "mappedBy": "article"
+    },
+    "like_count": {
+      "min": 0,
+      "default": 0,
+      "type": "integer"
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "content": {
+      "type": "customField",
+      "options": {
+        "preset": "defaultHtml"
+      },
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "customField": "plugin::ckeditor5.CKEditor"
     }
   }
 }
