@@ -520,6 +520,10 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    users: Schema.Attribute.Relation<
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -1244,6 +1248,8 @@ export interface PluginUsersPermissionsUser
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    bookmarks: Schema.Attribute.Relation<'manyToMany', 'api::article.article'> &
+      Schema.Attribute.Private;
     comments: Schema.Attribute.Relation<'oneToMany', 'api::comment.comment'>;
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private;
     confirmed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1258,8 +1264,6 @@ export interface PluginUsersPermissionsUser
       }>;
     firstName: Schema.Attribute.String & Schema.Attribute.Required;
     is_premium: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    isEmailVerified: Schema.Attribute.Boolean &
-      Schema.Attribute.DefaultTo<false>;
     isPhoneNumberVerified: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     lastName: Schema.Attribute.String & Schema.Attribute.Required;
