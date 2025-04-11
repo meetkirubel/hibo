@@ -1256,7 +1256,13 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    firstName: Schema.Attribute.String & Schema.Attribute.Required;
     is_premium: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    isEmailVerified: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    isPhoneNumberVerified: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    lastName: Schema.Attribute.String & Schema.Attribute.Required;
     likes: Schema.Attribute.Relation<'oneToMany', 'api::like.like'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1269,6 +1275,9 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    phoneNumber: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     resetPasswordToken: Schema.Attribute.String & Schema.Attribute.Private;
@@ -1289,6 +1298,7 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 3;
       }>;
+    verificationToken: Schema.Attribute.String;
   };
 }
 
