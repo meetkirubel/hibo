@@ -90,10 +90,6 @@
     "verificationToken": {
       "type": "string"
     },
-    "isEmailVerified": {
-      "type": "boolean",
-      "default": false
-    },
     "isPhoneNumberVerified": {
       "type": "boolean",
       "default": false
@@ -110,6 +106,13 @@
       "type": "string",
       "required": true,
       "unique": true
+    },
+    "bookmarks": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article",
+      "private": true,
+      "inversedBy": "users"
     }
   }
 }
