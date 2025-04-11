@@ -55,7 +55,7 @@ export default {
       filters.slug = slug;
     }
 
-    const [articles, total] = await Promise.all([
+    const [articles] = await Promise.all([
       strapi.documents('api::article.article').findMany({
         where: filters,
         select: [
@@ -81,9 +81,9 @@ export default {
           author: { fields: ['firstname', 'lastname'] },
         },
       }),
-      strapi.query('api::article.article').count({ where: filters }),
     ]);
 
+    const total = articles.length;
     const articleIds = articles.map((article) => article.documentId);
 
     // Fetch all likes for the current user for these articles
@@ -129,6 +129,116 @@ export default {
         updated_at: article.updatedAt,
         content: article.content,
       })),
+    };
+  },
+
+  // Bookmark service
+  async bookmark(ctx, userId, articleId) {
+    // Find the user and article
+    const user = await strapi
+      .documents('plugin::users-permissions.user')
+      .findOne({ documentId: userId });
+
+    const article = await strapi
+      .documents('api::article.article')
+      .findOne({ documentId: articleId });
+
+    if (!user || !article) {
+      ctx.badRequest('User or Article not found');
+    }
+
+    // Add the article to the user's bookmarks
+    const result = await strapi
+      .documents('plugin::users-permissions.user')
+      .update({
+        documentId: userId,
+        data: {
+          bookmarks: {
+            connect: [{ documentId: articleId }],
+          },
+        },
+      });
+
+    return result;
+  },
+
+  // Unbookmark service
+  async unbookmark(ctx, userId, articleId) {
+    // Find the user and article
+    const user = await strapi
+      .documents('plugin::users-permissions.user')
+      .findOne({ documentId: userId });
+
+    const article = await strapi
+      .documents('api::article.article')
+      .findOne({ documentId: articleId });
+
+    if (!user || !article) {
+      ctx.badRequest('User or Article not found');
+    }
+
+    // Add the article to the user's bookmarks
+    const result = await strapi
+      .documents('plugin::users-permissions.user')
+      .update({
+        documentId: userId,
+        data: {
+          bookmarks: {
+            disconnect: [{ documentId: articleId }],
+          },
+        },
+      });
+
+    return result;
+  },
+
+  // Get all the bookmarks bookmarked by a user
+  async getBookmarks(ctx, userId, page, limit) {
+    const pageNumber = parseInt(page, 10) || 1;
+    const pageSize = parseInt(limit, 10) || 10;
+
+    // Find the user by ID
+    const user = await strapi
+      .documents('plugin::users-permissions.user')
+      .findOne({ documentId: userId, populate: { bookmarks: true } });
+
+    if (!user) {
+      ctx.badRequest('User not found');
+    }
+
+    // Check if the user has any bookmarks
+    if (!user.bookmarks || user.bookmarks.length === 0) {
+      return ctx.send({
+        message: 'No bookmarks found',
+        pagination: {
+          page: pageNumber,
+          pageSize,
+          total: 0,
+          pageCount: 0,
+          hasNextPage: false,
+        },
+        bookmarks: [],
+      });
+    }
+    // Calculate pagination variables
+    const total = user.bookmarks.length; // Total number of bookmarks
+    const pageCount = Math.ceil(total / pageSize); // Total pages
+    const start = (pageNumber - 1) * pageSize; // Calculate starting index
+    const end = start + pageSize; // Calculate end index
+
+    // Get paginated bookmarks
+    const paginatedBookmarks = user.bookmarks.slice(start, end);
+
+    // Return the paginated bookmarks with pagination info
+    return {
+      pagination: {
+        page: Number(pageNumber),
+        pageSize: Number(pageSize),
+        total,
+        pageCount,
+        hasNextPage: end < total,
+      },
+      bookmarks: paginatedBookmarks,
     };
   },
 };

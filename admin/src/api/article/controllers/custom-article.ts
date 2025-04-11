@@ -19,7 +19,7 @@ export default factories.createCoreController(
           tag,
           locale,
           is_featured,
-          slug
+          slug,
         } = sanitizedQuery;
 
         const result = await articleService.getPaginatedArticles({
@@ -32,13 +32,51 @@ export default factories.createCoreController(
           tag,
           locale,
           is_featured,
-          slug
+          slug,
         });
 
         return ctx.send(result);
       } catch (error) {
         ctx.throw(500, `Failed to fetch articles: ${error.message}`);
       }
+    },
+
+    // Create an article bookmark
+    async bookmark(ctx) {
+      const userId = ctx.state?.user?.documentId;
+      const sanitizedQuery = await this.sanitizeQuery(ctx);
+      const { articleId } = sanitizedQuery;
+
+      const result = await articleService.bookmark(ctx, userId, articleId);
+
+      return ctx.send(result);
+    },
+
+    // Unbookmark an article
+    async unbookmark(ctx) {
+      const userId = ctx.state?.user?.documentId;
+      const sanitizedQuery = await this.sanitizeQuery(ctx);
+      const { articleId } = sanitizedQuery;
+
+      const result = await articleService.unbookmark(ctx, userId, articleId);
+
+      return ctx.send(result);
+    },
+
+    // Get all bookmarks bookmarked by a user
+    async getBookmarks(ctx) {
+      const userId = ctx.state?.user?.documentId;
+      const sanitizedQuery = await this.sanitizeQuery(ctx);
+      const { page, pageSize } = sanitizedQuery;
+
+      const result = await articleService.getBookmarks(
+        ctx,
+        userId,
+        page,
+        pageSize
+      );
+
+      return ctx.send(result);
     },
   })
 );
