@@ -86,6 +86,30 @@
       "relation": "oneToMany",
       "target": "api::like.like",
       "mappedBy": "user"
+    },
+    "verificationToken": {
+      "type": "string"
+    },
+    "isEmailVerified": {
+      "type": "boolean",
+      "default": false
+    },
+    "isPhoneNumberVerified": {
+      "type": "boolean",
+      "default": false
+    },
+    "firstName": {
+      "type": "string",
+      "required": true
+    },
+    "lastName": {
+      "type": "string",
+      "required": true
+    },
+    "phoneNumber": {
+      "type": "string",
+      "required": true,
+      "unique": true
     }
   }
 }
