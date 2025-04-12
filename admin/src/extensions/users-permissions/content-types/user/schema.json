@@ -86,6 +86,33 @@
       "relation": "oneToMany",
       "target": "api::like.like",
       "mappedBy": "user"
+    },
+    "verificationToken": {
+      "type": "string"
+    },
+    "isPhoneNumberVerified": {
+      "type": "boolean",
+      "default": false
+    },
+    "firstName": {
+      "type": "string",
+      "required": true
+    },
+    "lastName": {
+      "type": "string",
+      "required": true
+    },
+    "phoneNumber": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "bookmarks": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article",
+      "private": true,
+      "inversedBy": "users"
     }
   }
 }

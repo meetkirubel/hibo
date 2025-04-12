@@ -33,7 +33,7 @@ export default {
       article: { documentId: articleId },
     };
 
-    const [comments, total] = await Promise.all([
+    const [comments] = await Promise.all([
       strapi.documents('api::comment.comment').findMany({
         where: filters,
         select: ['documentId', 'content'],
@@ -45,8 +45,9 @@ export default {
           article: { fields: 'title' },
         },
       }),
-      strapi.query('api::comment.comment').count({ where: filters }),
     ]);
+
+    const total = comments.length;
 
     return {
       pagination: {
