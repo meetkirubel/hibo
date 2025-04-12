@@ -14,7 +14,6 @@ export default ({ env }) => ({
           'lastName',
           'username',
           'email',
-          'phoneNumber',
           'password',
         ],
       },
