@@ -2,23 +2,28 @@ export default {
   routes: [
     {
       method: 'GET',
-      path: '/v1/articles',
-      handler: 'api::article.custom-article.findArticles',
+      path: '/articles',
+      handler: 'api::article.custom-article.customFind',
     },
     {
       method: 'POST',
-      path: '/v1/articles/bookmark',
+      path: '/articles/bookmark',
       handler: 'api::article.custom-article.bookmark',
     },
     {
       method: 'POST',
-      path: '/v1/articles/unbookmark',
+      path: '/articles/unbookmark',
       handler: 'api::article.custom-article.unbookmark',
     },
     {
       method: 'GET',
-      path: '/v1/articles/bookmark',
+      path: '/articles/bookmarks',
       handler: 'api::article.custom-article.getBookmarks',
+    },
+    {
+      method: 'GET',
+      path: '/articles/:slug',
+      handler: 'api::article.custom-article.FindBySlug',
     },
   ],
 };

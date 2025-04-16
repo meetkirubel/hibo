@@ -1,58 +1,32 @@
-function formatLikeCount(number) {
-  if (number >= 1000) {
-    return Math.floor(number / 1000) + 'K';
-  }
-  return number.toString();
-}
-
 export default {
   // Get all articles
-  async getPaginatedArticles({
-    userId,
-    page,
-    limit,
-    search,
-    category,
-    subcategory,
-    tag,
-    locale,
-    is_featured,
-    slug,
-  }) {
-    const pageNumber = parseInt(page, 10) || 1;
-    const pageSize = parseInt(limit, 10) || 10;
+  async getPaginatedArticles(userId, query) {
+    const pageNumber = parseInt(query?.pagination?.page, 10) || 1;
+    const pageSize = parseInt(query?.pagination?.pageSize, 10) || 25;
     const start = (pageNumber - 1) * pageSize;
 
+    // Create the filters
     const filters: any = { approval_status: 'approved' };
 
-    if (search) {
-      filters.title = { $contains: search };
+    if (query.title) {
+      filters.title = { $contains: query.title };
     }
-
-    if (category) {
-      filters.category = category;
+    if (query.category) {
+      filters.category = query.category;
     }
-
-    if (subcategory) {
-      filters.subcategory = subcategory;
+    if (query.subcategory) {
+      filters.subcategory = query.subcategory;
     }
-
-    if (locale) {
-      filters.locale = locale;
+    if (query.locale) {
+      filters.locale = query.locale;
     }
-
-    if (tag) {
+    if (query.tag) {
       filters.tag = {
-        $contains: tag.trim(),
+        $contains: query.tag.trim(),
       };
     }
-
-    if (is_featured) {
-      filters.is_featured = is_featured;
-    }
-
-    if (slug) {
-      filters.slug = slug;
+    if (query.is_featured) {
+      filters.is_featured = query.is_featured;
     }
 
     const [articles, total] = await Promise.all([
@@ -75,10 +49,7 @@ export default {
         limit: pageSize,
         sort: { createdAt: 'desc' },
         populate: {
-          image: { fields: 'url' },
-          category: { fields: 'name' },
-          sub_category: { fields: 'name' },
-          author: { fields: ['firstname', 'lastname'] },
+          ...query?.populate,
         },
       }),
       strapi.documents('api::article.article').count({ filters }),
@@ -104,31 +75,30 @@ export default {
     );
 
     return {
-      pagination: {
-        page: pageNumber,
-        pageSize,
-        pageCount: Math.ceil(total / pageSize),
-        total,
+      meta: {
+        pagination: {
+          page: pageNumber,
+          pageSize,
+          pageCount: Math.ceil(total / pageSize),
+          total,
+        },
       },
       data: articles.map((article) => ({
-        documentId: article.documentId,
-        title: article.title,
-        author: article.author ? article.author : null,
-        slug: article.slug,
-        featured_image: article.image ? article.image.url : null,
-        excerpt: article.excerpt,
-        reading_time: article.reading_time,
-        tag: article.tag
-          ? article.tag.split(',').map((tag) => tag.trim())
-          : null,
-        is_premium: article.is_premium,
+        ...article,
         likedByCurrentUser: likedArticleIds.has(article.documentId),
-        likes: formatLikeCount(article.like_count),
-        is_featured: article.is_featured,
-        updated_at: article.updatedAt,
-        content: article.content,
       })),
     };
+  },
+
+  //   Find by slug
+  async getBySlug(slug: string, query: any) {
+    const result = await strapi.documents('api::article.article').findMany({
+      filters: { slug },
+      limit: 1,
+      ...query,
+    });
+
+    return result[0] || null;
   },
 
   // Bookmark service
@@ -158,7 +128,7 @@ export default {
         },
       });
 
-    return result;
+    return { message: 'Article bookmarked successfully' };
   },
 
   // Unbookmark service
@@ -188,18 +158,21 @@ export default {
         },
       });
 
-    return result;
+    return { message: 'Article unbookmarked successfully' };
   },
 
   // Get all the bookmarks bookmarked by a user
-  async getBookmarks(ctx, userId, page, limit) {
-    const pageNumber = parseInt(page, 10) || 1;
-    const pageSize = parseInt(limit, 10) || 10;
+  async getBookmarks(ctx, userId, query) {
+    const pageNumber = parseInt(query.pagination?.page, 10) || 1;
+    const pageSize = parseInt(query.pagination?.pageSize, 10) || 25;
 
     // Find the user by ID
     const user = await strapi
       .documents('plugin::users-permissions.user')
-      .findOne({ documentId: userId, populate: { bookmarks: true } });
+      .findOne({
+        documentId: userId,
+        populate: { bookmarks: true },
+      });
 
     if (!user) {
       ctx.badRequest('User not found');
@@ -209,19 +182,20 @@ export default {
     if (!user.bookmarks || user.bookmarks.length === 0) {
       return ctx.send({
         message: 'No bookmarks found',
-        pagination: {
-          page: pageNumber,
-          pageSize,
-          total: 0,
-          pageCount: 0,
-          hasNextPage: false,
+        meta: {
+          pagination: {
+            page: pageNumber,
+            pageSize,
+            pageCount: 0,
+            total: 0,
+          },
         },
         bookmarks: [],
       });
     }
     // Calculate pagination variables
-    const total = user.bookmarks.length; // Total number of bookmarks
-    const pageCount = Math.ceil(total / pageSize); // Total pages
+    const total = user.bookmarks.length;
+    const pageCount = Math.ceil(total / pageSize);
     const start = (pageNumber - 1) * pageSize; // Calculate starting index
     const end = start + pageSize; // Calculate end index
 
@@ -230,14 +204,15 @@ export default {
 
     // Return the paginated bookmarks with pagination info
     return {
-      pagination: {
-        page: Number(pageNumber),
-        pageSize: Number(pageSize),
-        total,
-        pageCount,
-        hasNextPage: end < total,
+      meta: {
+        pagination: {
+          page: pageNumber,
+          pageSize,
+          pageCount,
+          total,
+        },
       },
-      bookmarks: paginatedBookmarks,
+      data: paginatedBookmarks,
     };
   },
 };
