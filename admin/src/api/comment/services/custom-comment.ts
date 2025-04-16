@@ -23,9 +23,9 @@ export default {
   },
 
   // Get all comments
-  async commentsForArticle(page, limit, articleId) {
-    const pageNumber = parseInt(page, 10) || 1;
-    const pageSize = parseInt(limit, 10) || 10;
+  async commentsForArticle(articleId, query) {
+    const pageNumber = parseInt(query.pagination?.page, 10) || 1;
+    const pageSize = parseInt(query.pagination?.pageSize, 10) || 25;
     const start = (pageNumber - 1) * pageSize;
 
     const filters: any = {
@@ -33,7 +33,7 @@ export default {
       article: { documentId: articleId },
     };
 
-    const [comments] = await Promise.all([
+    const [comments, total] = await Promise.all([
       strapi.documents('api::comment.comment').findMany({
         where: filters,
         select: ['documentId', 'content'],
@@ -41,28 +41,22 @@ export default {
         limit: pageSize,
         orderBy: { createdAt: 'desc' },
         populate: {
-          commentor: { fields: ['username'] },
-          article: { fields: 'title' },
+          ...query?.populate,
         },
       }),
+      strapi.documents('api::comment.comment').count({ filters }),
     ]);
 
-    const total = comments.length;
-
     return {
-      pagination: {
-        page: pageNumber,
-        pageSize,
-        total,
-        pageCount: Math.ceil(total / pageSize),
-        hasNextPage: start + pageSize < total,
+      meta: {
+        pagination: {
+          page: pageNumber,
+          pageSize,
+          pageCount: Math.ceil(total / pageSize),
+          total,
+        },
       },
-      data: comments.map((comment) => ({
-        documentId: comment.documentId,
-        content: comment.content,
-        article: comment.article.documentId,
-        commentor: comment.commentor.username,
-      })),
+      data: comments,
     };
   },
 };
