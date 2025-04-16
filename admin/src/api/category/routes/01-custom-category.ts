@@ -2,7 +2,7 @@ export default {
   routes: [
     {
       method: 'GET',
-      path: '/v1/recent-articles',
+      path: '/recent-articles',
       handler: 'api::category.custom-category.getRecentArticlesByCategory',
     },
   ],
