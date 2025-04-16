@@ -179,9 +179,8 @@ export default {
     }
 
     // Check if the user has any bookmarks
-    if (!user.bookmarks || user.bookmarks.length === 0) {
+    if (!user.bookmarks) {
       return ctx.send({
-        message: 'No bookmarks found',
         meta: {
           pagination: {
             page: pageNumber,
@@ -190,7 +189,7 @@ export default {
             total: 0,
           },
         },
-        bookmarks: [],
+        data: [],
       });
     }
     // Calculate pagination variables
