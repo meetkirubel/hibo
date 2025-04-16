@@ -1,5 +1,5 @@
 import type { Core } from '@strapi/strapi';
-import { contentMiddleware } from './utils/document-service-middlewares';
+import { contentMiddleware } from './api/article/middlewares/document-service-middlewares';
 
 export default {
   /**
