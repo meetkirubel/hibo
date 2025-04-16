@@ -55,7 +55,7 @@ export default {
       filters.slug = slug;
     }
 
-    const [articles] = await Promise.all([
+    const [articles, total] = await Promise.all([
       strapi.documents('api::article.article').findMany({
         where: filters,
         select: [
@@ -81,9 +81,9 @@ export default {
           author: { fields: ['firstname', 'lastname'] },
         },
       }),
+      strapi.documents('api::article.article').count({ filters }),
     ]);
 
-    const total = articles.length;
     const articleIds = articles.map((article) => article.documentId);
 
     // Fetch all likes for the current user for these articles
@@ -107,9 +107,8 @@ export default {
       pagination: {
         page: pageNumber,
         pageSize,
-        total,
         pageCount: Math.ceil(total / pageSize),
-        hasNextPage: start + pageSize < total,
+        total,
       },
       data: articles.map((article) => ({
         documentId: article.documentId,
