@@ -95,7 +95,12 @@ export default {
     const result = await strapi.documents('api::article.article').findMany({
       filters: { slug },
       limit: 1,
-      ...query,
+      populate: {
+        image: { fields: 'url' },
+        category: { fields: 'name' },
+        sub_category: { fields: 'name' },
+        author: { fields: ['firstname', 'lastname'] },
+      },
     });
 
     return result[0] || null;
