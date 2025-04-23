@@ -424,6 +424,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     approval_status: Schema.Attribute.Enumeration<
       ['draft', 'waiting_for_approval', 'approved']
     > &
+      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -450,6 +451,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     excerpt: Schema.Attribute.String &
+      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -497,7 +499,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         number
       > &
       Schema.Attribute.DefaultTo<0>;
-    slug: Schema.Attribute.UID<'title'>;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     sub_category: Schema.Attribute.Relation<
       'manyToOne',
       'api::sub-category.sub-category'
@@ -541,6 +543,8 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    description: Schema.Attribute.Blocks;
+    image: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1280,6 +1284,7 @@ export interface PluginUsersPermissionsUser
     phoneNumber: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
+    profilePicture: Schema.Attribute.Media<'images'>;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     resetPasswordToken: Schema.Attribute.String & Schema.Attribute.Private;

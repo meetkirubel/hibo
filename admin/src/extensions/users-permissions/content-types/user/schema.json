@@ -113,6 +113,13 @@
       "target": "api::article.article",
       "private": true,
       "inversedBy": "users"
+    },
+    "profilePicture": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
     }
   }
 }
