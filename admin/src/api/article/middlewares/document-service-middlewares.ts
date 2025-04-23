@@ -17,6 +17,7 @@ const contentMiddleware = () => {
     const { data } = context.params;
     let title = data.title;
     let content = data.content;
+    console.log(content);
 
     // Capitilize the title
     if (title) {
@@ -40,6 +41,7 @@ const contentMiddleware = () => {
 
     // Calculate reading time
     if (content) {
+      console.log('Reading time', context.params.data.reading_time);
       context.params.data.reading_time = calculateReadingTime(content);
     }
 

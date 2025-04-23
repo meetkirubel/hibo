@@ -89,16 +89,22 @@ const extractTextFromBlocks = (blocks) => {
 };
 
 // Calculate reading time
-const calculateReadingTime = (contentBlocks) => {
+const calculateReadingTime = (htmlContent) => {
   try {
-    if (!Array.isArray(contentBlocks) || contentBlocks.length === 0) {
-      return 0; // No content, so reading time is 0
+    if (typeof htmlContent !== 'string' || htmlContent.trim().length === 0) {
+      return 0;
     }
 
-    const textContent = extractTextFromBlocks(contentBlocks);
-    if (!textContent) return 0; // Prevent division by zero
+    // Remove all HTML tags to get plain text
+    const textContent = htmlContent
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-    const wordCount = textContent.split(/\s+/).filter(Boolean).length; // Remove empty strings
+    if (!textContent) return 0;
+
+    const wordCount = textContent.split(' ').filter(Boolean).length;
+
     return Math.ceil(wordCount / WORDS_PER_MINUTE);
   } catch (error) {
     console.error('Reading time calculation error:', error);
