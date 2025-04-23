@@ -5,13 +5,11 @@ export default factories.createCoreController(
   'api::article.article',
   ({ strapi }) => ({
     async getRecentArticlesByCategory(ctx) {
-      const sanitizedQuery = await this.sanitizeQuery(ctx);
-      const { category, page, pageSize } = sanitizedQuery;
+      const query = await this.sanitizeQuery(ctx);
 
       const result = await categoryService.getRecentArticlesByCategory(
         ctx,
-        page,
-        pageSize
+        query
       );
 
       return ctx.send(result);

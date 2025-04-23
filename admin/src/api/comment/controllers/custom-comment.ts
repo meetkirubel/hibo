@@ -5,10 +5,10 @@ export default factories.createCoreController(
   'api::comment.comment',
   ({ strapi }) => ({
     // Create a comment
-    async create(ctx) {
+    async customCreate(ctx) {
       const { user } = ctx.state;
-      if (!user) {
-        return ctx.unauthorized('You must be logged in to create a comment');
+      if (user.isAuthenticated) {
+        return ctx.unauthorized();
       }
       const { comment } = ctx.request.body;
       const sanitizedQuery = await this.sanitizeQuery(ctx);
@@ -30,14 +30,12 @@ export default factories.createCoreController(
     // Get all comments
     async getCommentsForArticle(ctx) {
       try {
-        const sanitizedQuery = await this.sanitizeQuery(ctx);
-        const { page, limit } = sanitizedQuery;
+        const query = await this.sanitizeQuery(ctx);
         const { articleId } = ctx.params;
 
         const result = await commentService.commentsForArticle(
-          page,
-          limit,
-          articleId
+          articleId,
+          query
         );
 
         return ctx.send(result);

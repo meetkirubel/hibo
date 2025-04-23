@@ -424,7 +424,6 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     approval_status: Schema.Attribute.Enumeration<
       ['draft', 'waiting_for_approval', 'approved']
     > &
-      Schema.Attribute.Private &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -464,7 +463,6 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
       }>;
     is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     is_premium: Schema.Attribute.Boolean &
-      Schema.Attribute.Private &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;

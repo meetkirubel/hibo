@@ -40,18 +40,13 @@
     },
     "approval_status": {
       "type": "enumeration",
-      "enum": [
-        "draft",
-        "waiting_for_approval",
-        "approved"
-      ],
+      "enum": ["draft", "waiting_for_approval", "approved"],
       "default": "draft",
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
-      },
-      "private": true
+      }
     },
     "is_premium": {
       "type": "boolean",
@@ -60,8 +55,7 @@
         "i18n": {
           "localized": true
         }
-      },
-      "private": true
+      }
     },
     "reading_time": {
       "type": "integer",
@@ -77,9 +71,7 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ],
+      "allowedTypes": ["images"],
       "pluginOptions": {
         "i18n": {
           "localized": false
