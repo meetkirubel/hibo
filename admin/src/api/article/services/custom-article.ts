@@ -83,9 +83,9 @@ export default {
           total,
         },
       },
-      data: articles.map((article) => ({
-        ...article,
-        likedByCurrentUser: likedArticleIds.has(article.documentId),
+      data: articles.map(({ content, ...rest }) => ({
+        ...rest,
+        likedByCurrentUser: likedArticleIds.has(rest.documentId),
       })),
     };
   },
