@@ -6,7 +6,7 @@ export default {
       .findOne({ documentId: articleId });
 
     if (!article) {
-      ctx.throw(404, 'Article not found');
+      return ctx.throw(404, 'Article not found');
     }
 
     // Check if the user already has liked an article
@@ -20,7 +20,7 @@ export default {
     // Check if the user has already liked the article
     if (action === 'like') {
       if (existingLike) {
-        ctx.throw(409, 'User has already like this article');
+        return ctx.throw(400, 'User has already liked this article');
       }
 
       // Create the like and the relationship
@@ -46,7 +46,7 @@ export default {
     // Check if the user hasn't liked the article yet
     if (action === 'unlike') {
       if (!existingLike) {
-        ctx.throw(409, 'User has not liked this article yet');
+        return ctx.throw('User has not liked this article yet');
       }
 
       // Delete the like
@@ -65,6 +65,6 @@ export default {
       return { message: 'Article unliked successfully' };
     }
 
-    return ctx.throw(400, 'Invalid action');
+    return ctx.badRequest('Invalid action');
   },
 };
