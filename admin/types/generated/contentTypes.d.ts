@@ -372,6 +372,7 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
 export interface ApiAdAd extends Struct.CollectionTypeSchema {
   collectionName: 'ads';
   info: {
+    description: '';
     displayName: 'Ads';
     pluralName: 'ads';
     singularName: 'ad';
