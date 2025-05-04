@@ -17,7 +17,6 @@ const contentMiddleware = () => {
     const { data } = context.params;
     let title = data.title;
     let content = data.content;
-    console.log(content);
 
     // Capitilize the title
     if (title) {
@@ -25,19 +24,22 @@ const contentMiddleware = () => {
     }
 
     // Generate slug
-    let Stitle = data.title || '';
-    Stitle = Stitle.replace(/[^A-Za-z0-9_.~]+/g, ' ');
-    // Generate slug
-    let slug = slugify(Stitle, {
-      lower: true,
-      trim: true,
-    });
 
-    // Trim unwanted trailing/leading symbols (-, ., _, ~)
-    slug = slug.replace(/^[-._~]+|[-._~]+$/g, '');
+    if (title != undefined) {
+      let Stitle = data.title || '';
+      Stitle = Stitle.replace(/[^A-Za-z0-9_.~]+/g, ' ');
+      // Generate slug
+      let slug = slugify(Stitle, {
+        lower: true,
+        trim: true,
+      });
 
-    // Assign it
-    context.params.data.slug = slug;
+      // Trim unwanted trailing/leading symbols (-, ., _, ~)
+      slug = slug.replace(/^[-._~]+|[-._~]+$/g, '');
+
+      // Assign it
+      context.params.data.slug = slug;
+    }
 
     // Calculate reading time
     if (content) {
