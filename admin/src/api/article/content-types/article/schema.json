@@ -73,12 +73,13 @@
           "localized": false
         }
       },
-      "min": 0
+      "min": 0,
+      "required": true
     },
     "image": {
       "type": "media",
       "multiple": false,
-      "required": false,
+      "required": true,
       "allowedTypes": [
         "images"
       ],
@@ -152,6 +153,16 @@
       "relation": "manyToMany",
       "target": "plugin::users-permissions.user",
       "mappedBy": "bookmarks"
+    },
+    "admin_profile": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::admin-profile.admin-profile",
+      "inversedBy": "articles"
+    },
+    "preview": {
+      "type": "text",
+      "required": true
     }
   }
 }
