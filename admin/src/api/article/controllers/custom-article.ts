@@ -26,10 +26,10 @@ export default factories.createCoreController(
 
     // Get article by slug
     async FindBySlug(ctx) {
+      const userId = ctx.state?.user?.documentId;
       const { slug } = ctx.params;
-      const query = this.sanitizeQuery(ctx);
 
-      const article = await articleService.getBySlug(slug, query);
+      const article = await articleService.getBySlug(ctx, userId, slug);
       if (!article) {
         return ctx.notFound('Article not found');
       }
