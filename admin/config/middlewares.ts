@@ -9,4 +9,10 @@ export default [
   'strapi::session',
   'strapi::favicon',
   'strapi::public',
+
+  // My middlewares
+  {
+    name: 'global::user',
+    config: {},
+  },
 ];
