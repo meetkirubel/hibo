@@ -13,7 +13,8 @@
   "attributes": {
     "name": {
       "type": "string",
-      "unique": true
+      "unique": true,
+      "required": true
     },
     "sub_categories": {
       "type": "relation",
@@ -28,14 +29,21 @@
       "mappedBy": "category"
     },
     "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
     },
     "description": {
-      "type": "blocks"
+      "type": "text",
+      "required": true
     }
   }
 }

@@ -369,6 +369,71 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAdAd extends Struct.CollectionTypeSchema {
+  collectionName: 'ads';
+  info: {
+    description: '';
+    displayName: 'Ads';
+    pluralName: 'ads';
+    singularName: 'ad';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    ads_link: Schema.Attribute.String & Schema.Attribute.Required;
+    company_name: Schema.Attribute.String & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    landscape_image: Schema.Attribute.Media<'images'> &
+      Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::ad.ad'> &
+      Schema.Attribute.Private;
+    portrait_image: Schema.Attribute.Media<'images'> &
+      Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiAdminProfileAdminProfile
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'admin_profiles';
+  info: {
+    description: '';
+    displayName: 'Admin Profile';
+    pluralName: 'admin-profiles';
+    singularName: 'admin-profile';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    about: Schema.Attribute.Text;
+    admin_user: Schema.Attribute.Relation<'oneToOne', 'admin::user'>;
+    articles: Schema.Attribute.Relation<'oneToMany', 'api::article.article'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    full_name: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::admin-profile.admin-profile'
+    > &
+      Schema.Attribute.Private;
+    profile: Schema.Attribute.Media<'images'>;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiAnalyticAnalytic extends Struct.CollectionTypeSchema {
   collectionName: 'analytics';
   info: {
@@ -421,6 +486,10 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     };
   };
   attributes: {
+    admin_profile: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::admin-profile.admin-profile'
+    >;
     approval_status: Schema.Attribute.Enumeration<
       ['draft', 'waiting_for_approval', 'approved']
     > &
@@ -458,6 +527,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         };
       }>;
     image: Schema.Attribute.Media<'images'> &
+      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: false;
@@ -485,8 +555,10 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::article.article'
     >;
+    preview: Schema.Attribute.Text & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     reading_time: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: false;
@@ -543,7 +615,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Blocks;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
     image: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -551,8 +623,11 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
       'api::category.category'
     > &
       Schema.Attribute.Private;
-    name: Schema.Attribute.String & Schema.Attribute.Unique;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     sub_categories: Schema.Attribute.Relation<
       'oneToMany',
       'api::sub-category.sub-category'
@@ -616,50 +691,6 @@ export interface ApiCommentComment extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiEmailSubscriptionEmailSubscription
-  extends Struct.CollectionTypeSchema {
-  collectionName: 'email_subscriptions';
-  info: {
-    description: 'Stores user email subscriptions';
-    displayName: 'Email Subscription';
-    pluralName: 'email-subscriptions';
-    singularName: 'email-subscription';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    email: Schema.Attribute.Email &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::email-subscription.email-subscription'
-    > &
-      Schema.Attribute.Private;
-    preferences: Schema.Attribute.JSON &
-      Schema.Attribute.DefaultTo<{
-        article_updates: true;
-        newsletter: true;
-      }>;
-    publishedAt: Schema.Attribute.DateTime;
-    subscribed_at: Schema.Attribute.DateTime &
-      Schema.Attribute.DefaultTo<'now'>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    user: Schema.Attribute.Relation<
-      'oneToOne',
-      'plugin::users-permissions.user'
-    > &
-      Schema.Attribute.Required;
-  };
-}
-
 export interface ApiLikeLike extends Struct.CollectionTypeSchema {
   collectionName: 'likes';
   info: {
@@ -691,42 +722,6 @@ export interface ApiLikeLike extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiNotificationNotification
-  extends Struct.CollectionTypeSchema {
-  collectionName: 'notifications';
-  info: {
-    description: 'Stores user notifications';
-    displayName: 'Notification';
-    pluralName: 'notifications';
-    singularName: 'notification';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    is_read: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::notification.notification'
-    > &
-      Schema.Attribute.Private;
-    message: Schema.Attribute.Text & Schema.Attribute.Required;
-    publishedAt: Schema.Attribute.DateTime;
-    timestamp: Schema.Attribute.DateTime & Schema.Attribute.DefaultTo<'now'>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    user: Schema.Attribute.Relation<
-      'manyToOne',
-      'plugin::users-permissions.user'
-    >;
-  };
-}
-
 export interface ApiSubCategorySubCategory extends Struct.CollectionTypeSchema {
   collectionName: 'sub_categories';
   info: {
@@ -744,14 +739,18 @@ export interface ApiSubCategorySubCategory extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::sub-category.sub-category'
     > &
       Schema.Attribute.Private;
-    name: Schema.Attribute.String & Schema.Attribute.Unique;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -768,26 +767,50 @@ export interface ApiSubscriptionSubscription
     singularName: 'subscription';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
+    auto_renew: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    canceled_at: Schema.Attribute.DateTime;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    end_date: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    interval: Schema.Attribute.Integer & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::subscription.subscription'
     > &
       Schema.Attribute.Private;
+    payment_provider: Schema.Attribute.String;
+    payment_reference: Schema.Attribute.String;
+    payment_status: Schema.Attribute.Enumeration<
+      [
+        'inactive',
+        'trialing',
+        'pending',
+        'active',
+        'past_due',
+        'canceled',
+        'expired',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'inactive'>;
+    payment_updated_at: Schema.Attribute.DateTime;
+    plan_type: Schema.Attribute.Enumeration<['trial', 'monthly', 'yearly']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'monthly'>;
     price: Schema.Attribute.Decimal & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    subscription_type: Schema.Attribute.String & Schema.Attribute.Required;
+    start_date: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    trial_end: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    users: Schema.Attribute.Relation<
-      'oneToMany',
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
       'plugin::users-permissions.user'
     >;
   };
@@ -1266,6 +1289,7 @@ export interface PluginUsersPermissionsUser
       }>;
     firstName: Schema.Attribute.String & Schema.Attribute.Required;
     is_premium: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    is_subscribed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     isPhoneNumberVerified: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     lastName: Schema.Attribute.String & Schema.Attribute.Required;
@@ -1292,8 +1316,8 @@ export interface PluginUsersPermissionsUser
       'manyToOne',
       'plugin::users-permissions.role'
     >;
-    subscription: Schema.Attribute.Relation<
-      'manyToOne',
+    subscriptions: Schema.Attribute.Relation<
+      'oneToMany',
       'api::subscription.subscription'
     >;
     updatedAt: Schema.Attribute.DateTime;
@@ -1319,13 +1343,13 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::ad.ad': ApiAdAd;
+      'api::admin-profile.admin-profile': ApiAdminProfileAdminProfile;
       'api::analytic.analytic': ApiAnalyticAnalytic;
       'api::article.article': ApiArticleArticle;
       'api::category.category': ApiCategoryCategory;
       'api::comment.comment': ApiCommentComment;
-      'api::email-subscription.email-subscription': ApiEmailSubscriptionEmailSubscription;
       'api::like.like': ApiLikeLike;
-      'api::notification.notification': ApiNotificationNotification;
       'api::sub-category.sub-category': ApiSubCategorySubCategory;
       'api::subscription.subscription': ApiSubscriptionSubscription;
       'plugin::content-releases.release': PluginContentReleasesRelease;

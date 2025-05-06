@@ -13,7 +13,8 @@
   "attributes": {
     "name": {
       "type": "string",
-      "unique": true
+      "unique": true,
+      "required": true
     },
     "category": {
       "type": "relation",
@@ -26,6 +27,15 @@
       "relation": "oneToMany",
       "target": "api::article.article",
       "mappedBy": "sub_category"
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
     }
   }
 }

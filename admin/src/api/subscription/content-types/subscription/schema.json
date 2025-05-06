@@ -8,22 +8,75 @@
     "description": "Stores user subscription details"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
-    "subscription_type": {
-      "type": "string",
+    "plan_type": {
+      "type": "enumeration",
+      "enum": [
+        "trial",
+        "monthly",
+        "yearly"
+      ],
+      "default": "monthly",
       "required": true
     },
     "price": {
       "type": "decimal",
       "required": true
     },
-    "users": {
+    "interval": {
+      "type": "integer",
+      "required": true
+    },
+    "start_date": {
+      "type": "datetime",
+      "required": true
+    },
+    "end_date": {
+      "type": "datetime",
+      "required": true
+    },
+    "canceled_at": {
+      "type": "datetime",
+      "required": false
+    },
+    "trial_end": {
+      "type": "datetime",
+      "required": false
+    },
+    "payment_updated_at": {
+      "type": "datetime"
+    },
+    "payment_status": {
+      "type": "enumeration",
+      "enum": [
+        "inactive",
+        "trialing",
+        "pending",
+        "active",
+        "past_due",
+        "canceled",
+        "expired"
+      ],
+      "default": "inactive",
+      "required": true
+    },
+    "auto_renew": {
+      "type": "boolean",
+      "default": true
+    },
+    "payment_provider": {
+      "type": "string"
+    },
+    "payment_reference": {
+      "type": "string"
+    },
+    "users_permissions_user": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "mappedBy": "subscription"
+      "inversedBy": "subscriptions"
     }
   }
 }

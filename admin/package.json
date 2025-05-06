@@ -23,6 +23,7 @@
     "@strapi/provider-email-nodemailer": "^5.12.4",
     "@strapi/strapi": "5.11.3",
     "better-sqlite3": "11.3.0",
+    "html-truncate": "^1.2.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",

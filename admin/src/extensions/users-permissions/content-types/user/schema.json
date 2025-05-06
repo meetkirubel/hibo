@@ -69,12 +69,6 @@
       "type": "boolean",
       "default": false
     },
-    "subscription": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::subscription.subscription",
-      "inversedBy": "users"
-    },
     "comments": {
       "type": "relation",
       "relation": "oneToMany",
@@ -115,11 +109,22 @@
       "inversedBy": "users"
     },
     "profilePicture": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
+    },
+    "is_subscribed": {
+      "type": "boolean",
+      "default": false
+    },
+    "subscriptions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::subscription.subscription",
+      "mappedBy": "users_permissions_user"
     }
   }
 }
